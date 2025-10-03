@@ -1,5 +1,4 @@
-// Refactored addFront into a function and added stubs for deleteAt, insertAt, deleteList
-
+// implemented deleteAt function and also updated main tp be able to use it 
 
 #include <iostream>
 #include <cstdlib>
@@ -12,9 +11,9 @@ struct Node {
     Node *next;
 };
 
-// ---------- Function Prototypes ----------
+// Function Prototypes
 Node* addFront(Node* head, int value);
-Node* deleteAt(Node* head, int entry);             // stub
+Node* deleteAt(Node* head, int entry);             
 Node* insertAt(Node* head, int entry, int value);  // stub
 void deleteList(Node*& head);                      // stub
 void output(Node* head);
@@ -22,43 +21,27 @@ void output(Node* head);
 int main() {
     Node *head = nullptr;
 
-    // create a linked list of size SIZE with random numbers 0-99
+    // makes a linked list of size SIZE with random numbers 0-99
     for (int i = 0; i < SIZE; i++) {
         int tmp_val = rand() % 100;
-        head = addFront(head, tmp_val);   // ✅ refactored
+        head = addFront(head, tmp_val);
     }
 
     cout << "Initial list:\n";
     output(head);
 
-    // still inline code for delete/insert/cleanup (will refactor later)
-
-    // deleting a node
-    Node * current = head;
+    // using deleteAt()
     cout << "Which node to delete? " << endl;
     output(head);
     int entry;
     cout << "Choice --> ";
     cin >> entry;
-
-    current = head;
-    Node *prev = head;
-    for (int i = 0; i < (entry-1); i++)
-        if (i == 0)
-            current = current->next;
-        else {
-            current = current->next;
-            prev = prev->next;
-        }
-    if (current) {  
-        prev->next = current->next;
-        delete current;
-        current = nullptr;
-    }
+    head = deleteAt(head, entry);
+    cout << "List after deletion:\n";
     output(head);
 
-    // insert a node
-    current = head;
+    // insert a node "inline"
+    Node * current = head;
     cout << "After which node to insert 10000? " << endl;
     int count = 1;
     while (current) {
@@ -69,7 +52,7 @@ int main() {
     cin >> entry;
 
     current = head;
-    prev = head;
+    Node *prev = head;
     for (int i = 0; i < (entry); i++)
         if (i == 0)
             current = current->next;
@@ -83,7 +66,7 @@ int main() {
     prev->next = newnode;
     output(head);
 
-    // deleting the linked list
+    // deleting the linked list (still inline for now)
     current = head;
     while (current) {
         head = current->next;
@@ -96,7 +79,7 @@ int main() {
     return 0;
 }
 
-// ---------- Function Definitions ----------
+// Function Definitions
 
 // Add node at the head
 Node* addFront(Node* head, int value) {
@@ -106,11 +89,32 @@ Node* addFront(Node* head, int value) {
     return newNode;
 }
 
-// Stub functions (to be implemented later)
+// implemented deleteAt
 Node* deleteAt(Node* head, int entry) {
+    if (!head) return nullptr;
+
+    Node* current = head;
+    Node* prev = nullptr;
+
+    // move to nth node
+    for (int i = 1; i < entry && current; i++) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (!current) return head; // invalid entry
+
+    if (!prev) { // delete head
+        head = current->next;
+        delete current;
+    } else {
+        prev->next = current->next;
+        delete current;
+    }
     return head;
 }
 
+// Stub functions 
 Node* insertAt(Node* head, int entry, int value) {
     return head;
 }
@@ -133,3 +137,4 @@ void output(Node * hd) {
     }
     cout << endl;
 }
+
