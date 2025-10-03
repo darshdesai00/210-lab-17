@@ -1,4 +1,7 @@
+// added the funtion prototpyes
+
 #include <iostream>
+#include <cstdlib>
 using namespace std;
 
 const int SIZE = 7;  
@@ -8,7 +11,12 @@ struct Node {
     Node *next;
 };
 
-void output(Node *);
+// ---------- Function Prototypes ----------
+Node* addFront(Node* head, int value);
+Node* deleteAt(Node* head, int entry);
+Node* insertAt(Node* head, int entry, int value);
+void deleteList(Node*& head);
+void output(Node* head);
 
 int main() {
     Node *head = nullptr;
@@ -20,12 +28,12 @@ int main() {
         Node *newVal = new Node;
         
         // adds node at head
-        if (!head) { // if this is the first node, it's the new head
+        if (!head) { 
             head = newVal;
             newVal->next = nullptr;
             newVal->value = tmp_val;
         }
-        else { // its a second or subsequent node; place at the head
+        else { 
             newVal->next = head;
             newVal->value = tmp_val;
             head = newVal;
@@ -41,7 +49,6 @@ int main() {
     cout << "Choice --> ";
     cin >> entry;
 
-    // traverse that many times and delete that node
     current = head;
     Node *prev = head;
     for (int i = 0; i < (entry-1); i++)
@@ -51,8 +58,7 @@ int main() {
             current = current->next;
             prev = prev->next;
         }
-    // at this point, delete current and reroute pointers
-    if (current) {  // checks for current to be valid before deleting the node
+    if (current) {  
         prev->next = current->next;
         delete current;
         current = nullptr;
@@ -79,7 +85,6 @@ int main() {
             current = current->next;
             prev = prev->next;
         }
-    //at this point, insert a node between prev and current
     Node * newnode = new Node;
     newnode->value = 10000;
     newnode->next = current;
@@ -112,3 +117,6 @@ void output(Node * hd) {
     }
     cout << endl;
 }
+
+
+
