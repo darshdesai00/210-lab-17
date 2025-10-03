@@ -1,5 +1,4 @@
-// implemented deleteAt function and also updated main tp be able to use it 
-
+//added insertAt, deleteList, and addTail functions and finalized the code
 #include <iostream>
 #include <cstdlib>
 using namespace std;
@@ -11,77 +10,54 @@ struct Node {
     Node *next;
 };
 
-// Function Prototypes
+//Function Prototypes
 Node* addFront(Node* head, int value);
-Node* deleteAt(Node* head, int entry);             
-Node* insertAt(Node* head, int entry, int value);  // stub
-void deleteList(Node*& head);                      // stub
+Node* addTail(Node* head, int value);
+Node* deleteAt(Node* head, int entry);
+Node* insertAt(Node* head, int entry, int value);
+void deleteList(Node*& head);
 void output(Node* head);
 
 int main() {
     Node *head = nullptr;
+    int count = 0;
 
-    // makes a linked list of size SIZE with random numbers 0-99
+    // create a linked list of size SIZE with random numbers 0-99
     for (int i = 0; i < SIZE; i++) {
         int tmp_val = rand() % 100;
-        head = addFront(head, tmp_val);
+        head = addFront(head, tmp_val);   // adds node at head
     }
-
-    cout << "Initial list:\n";
     output(head);
 
-    // using deleteAt()
+    //deleting a node
     cout << "Which node to delete? " << endl;
     output(head);
     int entry;
     cout << "Choice --> ";
     cin >> entry;
     head = deleteAt(head, entry);
-    cout << "List after deletion:\n";
     output(head);
 
-    // insert a node "inline"
-    Node * current = head;
+    //insert a node
     cout << "After which node to insert 10000? " << endl;
-    int count = 1;
-    while (current) {
-        cout << "[" << count++ << "] " << current->value << endl;
-        current = current->next;
-    }
+    output(head);
     cout << "Choice --> ";
     cin >> entry;
-
-    current = head;
-    Node *prev = head;
-    for (int i = 0; i < (entry); i++)
-        if (i == 0)
-            current = current->next;
-        else {
-            current = current->next;
-            prev = prev->next;
-        }
-    Node * newnode = new Node;
-    newnode->value = 10000;
-    newnode->next = current;
-    prev->next = newnode;
+    head = insertAt(head, entry, 10000);
     output(head);
 
-    // deleting the linked list (still inline for now)
-    current = head;
-    while (current) {
-        head = current->next;
-        delete current;
-        current = head;
-    }
-    head = nullptr;
+    //deleting the linked list
+    deleteList(head);
+    output(head);
+
+    //add node at the tail
+    head = addTail(head, 200);
     output(head);
 
     return 0;
 }
 
-// Function Definitions
-
-// Add node at the head
+//adds node at head
 Node* addFront(Node* head, int value) {
     Node* newNode = new Node;
     newNode->value = value;
@@ -89,22 +65,36 @@ Node* addFront(Node* head, int value) {
     return newNode;
 }
 
-// implemented deleteAt
+//adds node at tail
+Node* addTail(Node* head, int value) {
+    Node* newNode = new Node;
+    newNode->value = value;
+    newNode->next = nullptr;
+    if (!head) return newNode;
+
+    Node* current = head;
+    while (current->next) {
+        current = current->next;
+    }
+    current->next = newNode;
+    return head;
+}
+
+//deleting a node
 Node* deleteAt(Node* head, int entry) {
     if (!head) return nullptr;
 
     Node* current = head;
     Node* prev = nullptr;
 
-    // move to nth node
     for (int i = 1; i < entry && current; i++) {
         prev = current;
         current = current->next;
     }
 
-    if (!current) return head; // invalid entry
+    if (!current) return head;
 
-    if (!prev) { // delete head
+    if (!prev) {
         head = current->next;
         delete current;
     } else {
@@ -114,16 +104,37 @@ Node* deleteAt(Node* head, int entry) {
     return head;
 }
 
-// Stub functions 
+//insert a node
 Node* insertAt(Node* head, int entry, int value) {
+    if (!head) return nullptr;
+
+    Node* current = head;
+    for (int i = 1; i < entry && current; i++) {
+        current = current->next;
+    }
+
+    if (!current) return head;
+
+    Node* newNode = new Node;
+    newNode->value = value;
+    newNode->next = current->next;
+    current->next = newNode;
+
     return head;
 }
 
+//deleting the linked list
 void deleteList(Node*& head) {
+    Node* current = head;
+    while (current) {
+        Node* temp = current;
+        current = current->next;
+        delete temp;
+    }
     head = nullptr;
 }
 
-// Print linked list
+//output the list
 void output(Node * hd) {
     if (!hd) {
         cout << "Empty list.\n";
@@ -137,4 +148,3 @@ void output(Node * hd) {
     }
     cout << endl;
 }
-
